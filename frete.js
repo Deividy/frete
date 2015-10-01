@@ -96,20 +96,17 @@ function Frete (opts) {
 
 const apiMethods = {
     prazo: {
-        apiMethodName: 'CalcPrazo',
-        apiResultNode: 'CalcPrazoResult',
+        correiosMethodName: 'CalcPrazo',
         required: [ ]
     },
 
     prazoData: {
-        apiMethodName: 'CalcPrazoData',
-        apiResultNode: 'CalcPrazoDataResult',
+        correiosMethodName: 'CalcPrazoData',
         required: [ 'sDtCalculo' ]
     },
 
     preco: {
-        apiMethodName: 'CalcPreco',
-        apiResultNode: 'CalcPrecoResult',
+        correiosMethodName: 'CalcPreco',
         required: [
             'nVlPeso',
             'nCdFormato',
@@ -124,8 +121,7 @@ const apiMethods = {
     },
 
     precoData: {
-        apiMethodName: 'CalcPrecoData',
-        apiResultNode: 'CalcPrecoDataResult',
+        correiosMethodName: 'CalcPrecoData',
         required: [
             'nVlPeso',
             'nCdFormato',
@@ -141,8 +137,7 @@ const apiMethods = {
     },
 
     precoFac: {
-        apiMethodName: 'CalcPrecoFAC',
-        apiResultNode: 'CalcPrecoFAC',
+        correiosMethodName: 'CalcPrecoFAC',
         required: [
             'nVlPeso',
             'strDataCalculo'
@@ -150,8 +145,7 @@ const apiMethods = {
     },
 
     precoPrazo: {
-        apiMethodName: 'CalcPrecoPrazo',
-        apiResultNode: 'CalcPrecoPrazoResult',
+        correiosMethodName: 'CalcPrecoPrazo',
         required: [
             'nVlPeso',
             'nCdFormato',
@@ -166,8 +160,7 @@ const apiMethods = {
     },
 
     precoPrazoData: {
-        apiMethodName: 'CalcPrecoPrazoData',
-        apiResultNode: 'CalcPrecoPrazoDataResult',
+        correiosMethodName: 'CalcPrecoPrazoData',
         required: [
             'nVlPeso',
             'nCdFormato',
@@ -183,8 +176,7 @@ const apiMethods = {
     },
 
     precoPrazoRestricao: {
-        apiMethodName: 'CalcPrecoPrazoRestricao',
-        apiResultNode: 'CalcPrecoPrazoRestricao',
+        correiosMethodName: 'CalcPrecoPrazoRestricao',
         required: [
             'nVlPeso',
             'nCdFormato',
@@ -231,13 +223,14 @@ Frete.prototype.tryGetValidationErrors = function (methodName, options) {
 
 for (let methodName in apiMethods) {
     let api = apiMethods[methodName];
-    defineFreteApiMethod(methodName, api.apiMethodName, api.apiResultNode);
+    defineFreteApiMethod(methodName, api.correiosMethodName);
 }
 
-function defineFreteApiMethod (methodName, apiMethodName, apiResultNode) {
+function defineFreteApiMethod (methodName, correiosMethodName) {
     V.string(methodName, 'methodName');
-    V.string(apiMethodName, 'apiMethodName');
-    V.string(apiResultNode, 'apiResultNode');
+    V.string(correiosMethodName, 'correiosMethodName');
+
+    let correiosResultNode = correiosMethodName + "Result";
 
     Frete.prototype[methodName] = function (cep, optsOrCallback, callback) {
         var opts = optsOrCallback;
@@ -269,11 +262,11 @@ function defineFreteApiMethod (methodName, apiMethodName, apiResultNode) {
         soap.createClient(SOAP_WSDL, function (err, client) {
             if (err) return callback(err);
 
-            client[apiMethodName](opts, function (err, res, body) {
+            client[correiosMethodName](opts, function (err, res, body) {
                 if (err) return callback(err);
 
-                if (res[apiResultNode] && res[apiResultNode].Servicos) {
-                    var services = res[apiResultNode].Servicos.cServico;
+                if (res[correiosResultNode] && res[correiosResultNode].Servicos) {
+                    var services = res[correiosResultNode].Servicos.cServico;
                     callback(null, services);
                     return;
                 }
