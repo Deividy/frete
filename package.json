@@ -20,7 +20,7 @@
     "type": "git",
     "url": "https://github.com/Deividy/frete.git"
   },
-  "keywords": [ "frete", "correios", "brasil" ],
+  "keywords": [ "frete", "correios", "correio", "cep", "brasil" ],
   "author": "Deividy Metheler Zachetti <deividyz@gmail.com>",
   "license": "MIT",
   "bugs": { "url": "https://github.com/Deividy/frete/issues" },
