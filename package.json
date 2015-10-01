@@ -1,0 +1,28 @@
+{
+  "name": "frete",
+  "version": "0.0.1",
+  "description": "Modulo para consumo da API de frete dos correios brasileiros.",
+  "main": "index.js",
+  "dependencies": {
+    "argument-validator": "",
+    "soap": ""
+  },
+  "devDependencies": {
+    "mocha": "",
+    "should": "",
+    "grunt": "",
+    "grunt-mocha-test": ""
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Deividy/frete.git"
+  },
+  "keywords": [ "frete", "correios", "brasil" ],
+  "author": "Deividy Metheler Zachetti <deividyz@gmail.com>",
+  "license": "MIT",
+  "bugs": { "url": "https://github.com/Deividy/frete/issues" },
+  "homepage": "https://github.com/Deividy/frete"
+}
