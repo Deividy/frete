@@ -123,4 +123,44 @@ describe("Frete", function () {
             done();
         });
     });
+
+    it('Request .precoPrazo()', function (done) {
+        let f = frete();
+
+        f
+            .peso(1)
+            .formato(1)
+            .comprimento(16)
+            .altura(2)
+            .largura(11)
+            .diametro(1)
+            .maoPropria('N')
+            .valorDeclarado(50)
+            .avisoRecebimento('S');
+
+        f.precoPrazo('13466321', function (err, results) {
+            if (err) return done(err);
+
+            let services = f.options.nCdServico;
+            let hasAllServices = true;
+
+            services.forEach(function (service) {
+                let hasService = false;
+                for (let i = 0; i < results.length; ++i) {
+                    if (results[i].Codigo == service) {
+                        hasService = true;
+                        break;
+                    }
+                }
+
+                if (!hasService) {
+                    hasAllServices = false;
+                }
+            });
+
+            assert.equal(hasAllServices, true);
+
+            done();
+        });
+    });
 });
