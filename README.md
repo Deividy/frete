@@ -1,6 +1,7 @@
-Frete [![Build Status](https://travis-ci.org/Deividy/frete.png?branch=master)](https://travis-ci.org/Deividy/frete)
+Frete 
 ===============
 
+[![Build Status](https://travis-ci.org/Deividy/frete.png?branch=master)](https://travis-ci.org/Deividy/frete)
 [![npm](https://img.shields.io/npm/v/npm.svg)](https://github.com/Deividy/frete)
 [![npm](https://img.shields.io/npm/l/express.svg)](https://github.com/Deividy/frete)
 
