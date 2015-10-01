@@ -94,7 +94,7 @@ function Frete (opts) {
     });
 }
 
-const freteMethodsToApi = {
+const apiMethods = {
     prazo: {
         apiMethodName: 'CalcPrazo',
         apiResultNode: 'CalcPrazoResult',
@@ -204,7 +204,7 @@ Frete.prototype.tryGetValidationErrors = function (methodName, options) {
     V.string(methodName, 'methodName');
     V.object(options, 'options');
 
-    let api = freteMethodsToApi[methodName];
+    let api = apiMethods[methodName];
     if (!api) {
         throw new Error("Invalid method name: " + methodName);
     }
@@ -229,8 +229,8 @@ Frete.prototype.tryGetValidationErrors = function (methodName, options) {
     return errors;
 };
 
-for (let methodName in freteMethodsToApi) {
-    let api = freteMethodsToApi[methodName];
+for (let methodName in apiMethods) {
+    let api = apiMethods[methodName];
     defineFreteApiMethod(methodName, api.apiMethodName, api.apiResultNode);
 }
 
