@@ -1,4 +1,4 @@
-Frete 
+Frete
 ===============
 
 [![Build Status](https://travis-ci.org/Deividy/frete.png?branch=master)](https://travis-ci.org/Deividy/frete)
@@ -80,7 +80,7 @@ frete()
         console.log(err);
         console.log(results);
     });
-```  
+```
 
 ### Default options:
 ```javascript
@@ -98,10 +98,7 @@ frete().prazo('13466321', function (err, results) {
     });
 });
 
-
-
 ```
-
 
 ---
 

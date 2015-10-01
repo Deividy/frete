@@ -192,7 +192,65 @@ const apiMethods = {
     }
 };
 
-Frete.prototype.tryGetValidationErrors = function (methodName, options) {
+for (let methodName in apiMethods) {
+    let api = apiMethods[methodName];
+    defineFreteApiMethod(methodName, api.correiosMethodName);
+}
+
+function defineFreteApiMethod (methodName, correiosMethodName) {
+    V.string(methodName, 'methodName');
+    V.string(correiosMethodName, 'correiosMethodName');
+
+    let correiosResultNode = correiosMethodName + "Result";
+
+    Frete.prototype[methodName] = function (cep, optsOrCallback, callback) {
+        var opts = optsOrCallback;
+        if (V.isFunction(optsOrCallback) && !callback) {
+            callback = optsOrCallback;
+            opts = {};
+        }
+
+        V.string(cep, 'cep');
+        V.objectOrEmpty(opts, 'options');
+        V.function(callback, 'callback');
+
+        opts = extend({}, this.options, opts);
+        opts.sCepDestino = cep;
+
+        // special case, can be an array
+        if (V.isArray(opts.nCdServico)) {
+            opts.nCdServico = opts.nCdServico.join(',');
+        }
+        // special case, can be a number
+        if (V.isNumber(opts.nCdServico)) {
+            opts.nCdServico = String(opts.nCdServico);
+        }
+
+        let errors = tryGetValidationErrors(methodName, opts);
+        if (errors.length > 0) {
+            let err = new Error("Validation error:\n " + errors.join("\n"));
+            return callback(err);
+        }
+
+        soap.createClient(SOAP_WSDL, function (err, client) {
+            if (err) return callback(err);
+
+            client[correiosMethodName](opts, function (err, res, body) {
+                if (err) return callback(err, res, body);
+
+                if (res[correiosResultNode] && res[correiosResultNode].Servicos) {
+                    var services = res[correiosResultNode].Servicos.cServico;
+                    callback(null, services);
+                    return;
+                }
+
+                callback("Unknown response", res, body);
+            });
+        });
+    };
+}
+
+function tryGetValidationErrors (methodName, options) {
     V.string(methodName, 'methodName');
     V.object(options, 'options');
 
@@ -219,65 +277,9 @@ Frete.prototype.tryGetValidationErrors = function (methodName, options) {
     });
 
     return errors;
-};
-
-for (let methodName in apiMethods) {
-    let api = apiMethods[methodName];
-    defineFreteApiMethod(methodName, api.correiosMethodName);
 }
 
-function defineFreteApiMethod (methodName, correiosMethodName) {
-    V.string(methodName, 'methodName');
-    V.string(correiosMethodName, 'correiosMethodName');
-
-    let correiosResultNode = correiosMethodName + "Result";
-
-    Frete.prototype[methodName] = function (cep, optsOrCallback, callback) {
-        var opts = optsOrCallback;
-        if (V.isFunction(optsOrCallback) && !callback) {
-            callback = optsOrCallback;
-            opts = {};
-        }
-
-        V.string(cep, 'cep');
-        V.objectOrEmpty(opts, 'options');
-        V.function(callback, 'callback');
-
-        opts = extend({}, this.options, opts);
-        opts.sCepDestino = cep;
-
-        if (V.isArray(opts.nCdServico)) {
-            opts.nCdServico = opts.nCdServico.join(',');
-        }
-        if (V.isNumber(opts.nCdServico)) {
-            opts.nCdServico = String(opts.nCdServico);
-        }
-
-        let errors = this.tryGetValidationErrors(methodName, opts);
-        if (errors.length > 0) {
-            let err = new Error("Validation error:\n " + errors.join("\n"));
-            return callback(err);
-        }
-
-        soap.createClient(SOAP_WSDL, function (err, client) {
-            if (err) return callback(err);
-
-            client[correiosMethodName](opts, function (err, res, body) {
-                if (err) return callback(err);
-
-                if (res[correiosResultNode] && res[correiosResultNode].Servicos) {
-                    var services = res[correiosResultNode].Servicos.cServico;
-                    callback(null, services);
-                    return;
-                }
-
-                callback("Unknown response", res, body);
-            });
-        });
-    };
-}
-
-function buildSetters (optionsObject, propertyName, defaultValue) {
+function buildSetters (optionsObject, propertyName) {
     V.object(optionsObject, 'options object');
     V.string(propertyName, 'property name');
 
@@ -326,6 +328,6 @@ function buildSetters (optionsObject, propertyName, defaultValue) {
     };
 
     return setters;
-};
+}
 
 module.exports = frete;
