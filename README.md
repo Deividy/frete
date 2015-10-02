@@ -76,7 +76,7 @@ frete()
     .valorDeclarado(50)
     .avisoRecebimento('S')
     .servico(frete.codigos.sedex)
-    .preco('13466321', function (err, results) {
+    .precoPrazo('13466321', function (err, results) {
         console.log(err);
         console.log(results);
     });
