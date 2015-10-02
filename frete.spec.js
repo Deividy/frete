@@ -84,6 +84,16 @@ describe("Frete", function () {
         });
     });
 
+    it('Requests .prazo() correios error', function (done) {
+        let f = frete();
+
+        f.prazo('555555', function (err) {
+            assert(/CEP de destino inexistente, consulte o Busca CEP./.test(err.message), true);
+            assert(/Serviço indisponível para o trecho informado/.test(err.message), true);
+            done();
+        });
+    });
+
     it('Request .preco()', function (done) {
         let f = frete();
 
