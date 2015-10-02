@@ -236,7 +236,7 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
 
         let errors = tryGetValidationErrors(methodName, opts);
         if (errors.length > 0) {
-            let err = new Error("Validation error:\n " + errors.join("\n"));
+            let err = new Error("Validation error:\n" + errors.join("\n"));
             return callback(err);
         }
 
@@ -248,6 +248,10 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
 
                 if (res[correiosResultNode] && res[correiosResultNode].Servicos) {
                     var services = res[correiosResultNode].Servicos.cServico;
+
+                    if (!services || !V.isArray(services)) {
+                        return callback("Unknown cServico", res, body);
+                    }
 
                     let errors = [];
 
@@ -268,7 +272,8 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
                     });
 
                     if (errors.length > 0) {
-                        return callback(errors, res, body);
+                        let err = new Error(correiosMethodName + ":\n" + errors.join("\n"));
+                        return callback(err, res, body);
                     }
 
                     callback(null, services);
