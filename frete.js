@@ -232,7 +232,7 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
             opts.nCdServico = String(opts.nCdServico);
         }
 
-        let errors = tryGetValidationErrors(methodName, opts);
+        let errors = getValidationErrors(methodName, opts);
         if (errors.length > 0) {
             let err = new Error("Validation error:\n" + errors.join("\n"));
             return callback(err);
@@ -300,7 +300,7 @@ function doRequest(methodName, opts, callback) {
     });
 }
 
-function tryGetValidationErrors (methodName, options) {
+function getValidationErrors (methodName, options) {
     V.string(methodName, 'methodName');
     V.object(options, 'options');
 
