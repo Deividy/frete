@@ -209,8 +209,6 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
     V.string(methodName, 'methodName');
     V.string(correiosMethodName, 'correiosMethodName');
 
-    let correiosResultNode = correiosMethodName + "Result";
-
     Frete.prototype[methodName] = function (cep, optsOrCallback, callback) {
         var opts = optsOrCallback;
         if (V.isFunction(optsOrCallback) && !callback) {
@@ -240,50 +238,66 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
             return callback(err);
         }
 
-        soap.createClient(SOAP_WSDL, function (err, client) {
-            if (err) return callback(err);
+        doRequest(correiosMethodName, opts, callback);
+    };
+}
 
-            client[correiosMethodName](opts, function (err, res, body) {
-                if (err) return callback(err, res, body);
+function execute (methodName, opts, callback) {
+    V.string(methodName, 'methodName');
+    V.object(opts, 'opts');
 
-                if (res[correiosResultNode] && res[correiosResultNode].Servicos) {
-                    var services = res[correiosResultNode].Servicos.cServico;
+    soap.createClient(SOAP_WSDL, function (err, client) {
+        if (err) return callback(err);
 
-                    if (!services || !V.isArray(services)) {
-                        return callback("Unknown cServico", res, body);
-                    }
+        client[methodName](opts, callback);
+    });
+}
 
-                    let errors = [];
+function doRequest(methodName, opts, callback) {
+    V.string(methodName, 'methodName');
+    V.object(opts, 'opts');
+    V.function(callback, 'callback');
 
-                    services.forEach(function(service) {
-                        for (let key in service) {
-                            let value = service[key];
+    let resultNode = methodName + "Result";
+    execute(methodName, opts, function (err, res, body) {
+        if (err) return callback(err, res, body);
 
-                            delete service[key];
+        if (res[resultNode] && res[resultNode].Servicos) {
+            var services = res[resultNode].Servicos.cServico;
 
-                            let keyCamelCase = key[0].toLowerCase() + '' + key.substring(1);
-                            service[keyCamelCase] = value;
-                        }
+            if (!services || !V.isArray(services)) {
+                return callback("Unknown cServico", res, body);
+            }
 
-                        if (service.msgErro && errors.indexOf(service.msgErro) === -1) {
-                            errors.push(service.msgErro);
-                        }
-                        service.name = frete.codigos.names[service.codigo];
-                    });
+            let errors = [];
 
-                    if (errors.length > 0) {
-                        let err = new Error(correiosMethodName + ":\n" + errors.join("\n"));
-                        return callback(err, res, body);
-                    }
+            services.forEach(function(service) {
+                for (let key in service) {
+                    let value = service[key];
 
-                    callback(null, services);
-                    return;
+                    delete service[key];
+
+                    let keyCamelCase = key[0].toLowerCase() + '' + key.substring(1);
+                    service[keyCamelCase] = value;
                 }
 
-                callback("Unknown response", res, body);
+                if (service.msgErro && errors.indexOf(service.msgErro) === -1) {
+                    errors.push(service.msgErro);
+                }
+                service.name = frete.codigos.names[service.codigo];
             });
-        });
-    };
+
+            if (errors.length > 0) {
+                let err = new Error(methodName + ":\n" + errors.join("\n"));
+                return callback(err, res, body);
+            }
+
+            callback(null, services);
+            return;
+        }
+
+        callback("Unknown response", res, body);
+    });
 }
 
 function tryGetValidationErrors (methodName, options) {
