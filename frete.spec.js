@@ -45,7 +45,7 @@ describe("Frete", function () {
             services.forEach(function (service) {
                 let hasService = false;
                 for (let i = 0; i < results.length; ++i) {
-                    if (results[i].Codigo == service) {
+                    if (results[i].codigo == service) {
                         hasService = true;
                         break;
                     }
@@ -107,7 +107,7 @@ describe("Frete", function () {
             services.forEach(function (service) {
                 let hasService = false;
                 for (let i = 0; i < results.length; ++i) {
-                    if (results[i].Codigo == service) {
+                    if (results[i].codigo == service) {
                         hasService = true;
                         break;
                     }
@@ -147,7 +147,7 @@ describe("Frete", function () {
             services.forEach(function (service) {
                 let hasService = false;
                 for (let i = 0; i < results.length; ++i) {
-                    if (results[i].Codigo == service) {
+                    if (results[i].codigo == service) {
                         hasService = true;
                         break;
                     }

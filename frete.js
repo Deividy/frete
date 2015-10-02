@@ -69,6 +69,14 @@ frete.codigos = {
     pac: 41106
 };
 
+frete.codigos.names = {
+    40010: 'Sedex',
+    40045: 'Sedex a cobrar',
+    40215: 'Sedex 10',
+    40290: 'Sedex hoje',
+    41106: 'PAC'
+};
+
 allOptions.forEach(function (opt) {
     var setters = buildSetters(defaultOptions, opt);
 
@@ -240,6 +248,19 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
 
                 if (res[correiosResultNode] && res[correiosResultNode].Servicos) {
                     var services = res[correiosResultNode].Servicos.cServico;
+
+                    services.forEach(function(service) {
+                        for (let key in service) {
+                            let value = service[key];
+
+                            delete service[key];
+
+                            let keyCamelCase = key[0].toLowerCase() + '' + key.substring(1);
+                            service[keyCamelCase] = value;
+                        }
+                        service.name = frete.codigos.names[service.codigo];
+                    });
+
                     callback(null, services);
                     return;
                 }
