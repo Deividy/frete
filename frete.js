@@ -249,6 +249,8 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
                 if (res[correiosResultNode] && res[correiosResultNode].Servicos) {
                     var services = res[correiosResultNode].Servicos.cServico;
 
+                    let errors = [];
+
                     services.forEach(function(service) {
                         for (let key in service) {
                             let value = service[key];
@@ -258,8 +260,16 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
                             let keyCamelCase = key[0].toLowerCase() + '' + key.substring(1);
                             service[keyCamelCase] = value;
                         }
+
+                        if (service.msgErro && errors.indexOf(service.msgErro) === -1) {
+                            errors.push(service.msgErro);
+                        }
                         service.name = frete.codigos.names[service.codigo];
                     });
+
+                    if (errors.length > 0) {
+                        return callback(errors, res, body);
+                    }
 
                     callback(null, services);
                     return;
