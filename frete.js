@@ -100,6 +100,18 @@ function Frete (opts) {
             self[setterName] = setters[setterName];
         }
     });
+
+    for (let key in self.options) {
+        let value = self.options[key];
+
+        if (!V.isFunction(self[key])) {
+            continue;
+        }
+
+        if (V.isString(value) || V.isNumber(value) || V.isArray(value)) {
+            self[key](value);
+        }
+    }
 }
 
 const apiMethods = {
@@ -211,16 +223,27 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
 
     Frete.prototype[methodName] = function (cep, optsOrCallback, callback) {
         var opts = optsOrCallback;
+
+        if (V.isFunction(cep) && arguments.length === 1) {
+            callback = cep;
+            opts = {};
+        }
+
         if (V.isFunction(optsOrCallback) && !callback) {
             callback = optsOrCallback;
             opts = {};
         }
 
-        V.string(cep, 'cep');
         V.objectOrEmpty(opts, 'options');
+        opts = extend({}, this.options, opts);
+
+        if (opts.cep || opts.cepDestino || opts.sCepDestino) {
+            cep = opts.cep || opts.cepDestino || opts.sCepDestino;
+        }
+
+        V.string(cep, 'cep');
         V.function(callback, 'callback');
 
-        opts = extend({}, this.options, opts);
         opts.sCepDestino = cep;
 
         // special case, can be an array

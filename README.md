@@ -100,6 +100,31 @@ frete().prazo('13466321', function (err, results) {
 
 ```
 
+### Objeto as config / More usages
+
+```javascript
+var frete = require('frete');
+frete.cepOrigem('13467460').servico([ frete.codigos.sedex, frete.codigos.pac ]);
+
+frete({
+    cepDestino: '13466321',
+    peso: 1,
+    formato: 1,
+    comprimento: 16,
+    altura: 2,
+    largura: 11,
+    diametro: 1,
+    maoPropria: 'N',
+    valorDeclarado: 50,
+    avisoRecebimento: 'S'
+}).preco(function(err, result) {
+    console.log(err);
+    console.log(result);
+});
+
+
+```
+
 ---
 
 ## Dependency
