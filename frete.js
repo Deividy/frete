@@ -77,11 +77,18 @@ frete.codigos.names = {
     41106: 'PAC'
 };
 
-allOptions.forEach(function (opt) {
-    var setters = buildSetters(defaultOptions, opt);
+allOptions.forEach(function (propertyName) {
+    let setterName = getSetterName(propertyName);
+    let proto = Frete.prototype;
 
-    for (let setterName in setters) {
-        frete[setterName] = setters[setterName];
+    frete[propertyName] = frete[setterName] = function (value) {
+        defaultOptions[propertyName] = value;
+        return this;
+    };
+
+    proto[propertyName] = proto[setterName] = function (value) {
+        this.options[propertyName] = value;
+        return this;
     }
 });
 
@@ -90,26 +97,16 @@ frete.defaultOptions = defaultOptions;
 function Frete (opts) {
     V.object(opts, 'opts');
 
-    const self = this;
+    this.options = opts;
+    for (let key in this.options) {
+        let value = this.options[key];
 
-    self.options = opts;
-    allOptions.forEach(function (opt) {
-        var setters = buildSetters(self.options, opt);
-
-        for (let setterName in setters) {
-            self[setterName] = setters[setterName];
-        }
-    });
-
-    for (let key in self.options) {
-        let value = self.options[key];
-
-        if (!V.isFunction(self[key])) {
+        if (!V.isFunction(this[key])) {
             continue;
         }
 
         if (V.isString(value) || V.isNumber(value) || V.isArray(value)) {
-            self[key](value);
+            this[key](value);
         }
     }
 }
@@ -363,8 +360,7 @@ function getValidationErrors (methodName, options) {
     return errors;
 }
 
-function buildSetters (optionsObject, propertyName) {
-    V.object(optionsObject, 'options object');
+function getSetterName (propertyName) {
     V.string(propertyName, 'property name');
 
     // special case for DataCalculo
@@ -384,13 +380,7 @@ function buildSetters (optionsObject, propertyName) {
         prettyNameMethod = firstLetter + prettyNameMethod.substring(1);
     }
 
-    var setters = {};
-    setters[propertyName] = setters[prettyNameMethod] = function (value) {
-        optionsObject[propertyName] = value;
-        return this;
-    };
-
-    return setters;
+    return prettyNameMethod;
 }
 
 module.exports = frete;
