@@ -370,7 +370,6 @@ function buildSetters (optionsObject, propertyName) {
     }
 
     // special case for DataCalculo
-    // PO!! Parece que o pessoal dos correios tem nenhum pattern! f*ck :(
     let prettyNameMethod;
     if (propertyName === 'strDataCalculo') {
         prettyNameMethod = 'dataCalculo';
@@ -390,12 +389,11 @@ function buildSetters (optionsObject, propertyName) {
     var setters = {};
     setters[propertyName] = setters[prettyNameMethod] = function (value) {
         if (isString) {
-            V.string(value, 'value');
+            V.string(value, propertyName);
         } else if (isNumber) {
-            V.number(value, 'value');
+            V.number(value, propertyName);
         }
 
-        // MUST: validate service
         optionsObject[propertyName] = value;
         return this;
     };
