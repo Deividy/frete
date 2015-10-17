@@ -1,6 +1,6 @@
 {
   "name": "frete",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Modulo para consumo da API de frete dos correios brasileiros.",
   "main": "frete.js",
   "dependencies": {
