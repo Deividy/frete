@@ -92,8 +92,6 @@ function Frete (opts) {
 
     const self = this;
 
-    this.errors = [];
-
     self.options = opts;
     allOptions.forEach(function (opt) {
         var setters = buildSetters(self.options, opt);
@@ -245,10 +243,6 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
 
         V.function(callback, 'callback');
 
-        if (!V.isString(cep)) {
-            this.errors.push("Missing/invalid value for sCepDestino.");
-        }
-
         opts.sCepDestino = cep;
 
         // special case, can be an array
@@ -260,7 +254,7 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
             opts.nCdServico = String(opts.nCdServico);
         }
 
-        let errors = this.errors.concat(getValidationErrors(methodName, opts));
+        let errors = getValidationErrors(methodName, opts);
         if (errors.length > 0) {
             let err = new Error("Validation error:\n" + errors.join("\n"));
             return callback(err);
@@ -393,16 +387,6 @@ function buildSetters (optionsObject, propertyName) {
 
     var setters = {};
     setters[propertyName] = setters[prettyNameMethod] = function (value) {
-        if (isString) {
-            if (!V.isString(value)) {
-                this.errors.push("Invalid string value for " + propertyName + " : " + value);
-            }
-        } else if (isNumber) {
-            if (!V.isNumber(value)) {
-                this.errors.push("Invalid number value for " + propertyName + " : " + value);
-            }
-        }
-
         optionsObject[propertyName] = value;
         return this;
     };
