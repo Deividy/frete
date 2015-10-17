@@ -19,7 +19,7 @@ Implementação  de todos os metodos disponiveis na API, com acessores simples e
 Para ganharmos um pouco de performance, usamos o wsdl salvo no folder `/wsdl`, ao inves de fazermos o request inicial para isso.
 
 
-Todas as opcoes do `wsdl` estao disponíveis via os mesmos comandos, e os metodos estao disponíveis nos mesmos nomes mas em `camelCase`.
+Todas as opcoes do `wsdl` estao disponíveis via os mesmos comandos, e os metodos estao disponíveis nos mesmos nomes mas em `camelCase` e sem o prefixo `Calc`, (e.g. `.precoPrazo()`).
 
 ## Exemplos
 
