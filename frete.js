@@ -277,6 +277,34 @@ function execute (methodName, opts, callback) {
     });
 }
 
+function decorateServices (services) {
+    services.forEach(function(service) {
+        for (let key in service) {
+            let value = service[key];
+
+            delete service[key];
+
+            let keyCamelCase = key[0].toLowerCase() + '' + key.substring(1);
+            service[keyCamelCase] = value;
+        }
+        service.name = frete.codigos.names[service.codigo];
+    });
+
+    return services;
+}
+
+function getErrorsFromServices (services) {
+    let errors = [];
+
+    services.forEach(function(service) {
+        if (service.MsgErro && errors.indexOf(service.MsgErro) === -1) {
+            errors.push(service.MsgErro);
+        }
+    });
+
+    return errors;
+}
+
 function doRequest(methodName, opts, callback) {
     V.string(methodName, 'methodName');
     V.object(opts, 'opts');
@@ -290,37 +318,19 @@ function doRequest(methodName, opts, callback) {
             var services = res[resultNode].Servicos.cServico;
 
             if (!services || !V.isArray(services)) {
-                return callback("Unknown cServico", res, body);
+                return callback("Unknown response. cServico not found.", res, body);
             }
 
-            let errors = [];
-
-            services.forEach(function(service) {
-                for (let key in service) {
-                    let value = service[key];
-
-                    delete service[key];
-
-                    let keyCamelCase = key[0].toLowerCase() + '' + key.substring(1);
-                    service[keyCamelCase] = value;
-                }
-
-                if (service.msgErro && errors.indexOf(service.msgErro) === -1) {
-                    errors.push(service.msgErro);
-                }
-                service.name = frete.codigos.names[service.codigo];
-            });
-
+            let errors = getErrorsFromServices(services);
             if (errors.length > 0) {
                 let err = new Error(methodName + ":\n" + errors.join("\n"));
                 return callback(err, res, body);
             }
 
-            callback(null, services);
-            return;
+            return callback(null, decorateServices(services));
         }
 
-        callback("Unknown response", res, body);
+        return callback("Unknown response", res, body);
     });
 }
 
