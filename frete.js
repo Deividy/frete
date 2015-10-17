@@ -355,19 +355,6 @@ function buildSetters (optionsObject, propertyName) {
     V.object(optionsObject, 'options object');
     V.string(propertyName, 'property name');
 
-    let isService = false;
-    let isString = false;
-    let isNumber = false;
-
-    // Servico is an special property, since it can have multiple codes,
-    // in that case, we accept an array, string or number
-    if (propertyName === 'nCdServico') {
-        isService = true;
-    } else {
-        isString = propertyName[0] === 's';
-        isNumber = propertyName[0] === 'n';
-    }
-
     // special case for DataCalculo
     let prettyNameMethod;
     if (propertyName === 'strDataCalculo') {
