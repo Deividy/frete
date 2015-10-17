@@ -70,12 +70,7 @@ describe("Frete", function () {
             assert.equal(/Expected a valid: string/.test(err.message), true)
 
             f.servico(frete.codigos.sedex);
-
-            assert.throws(function () {
-                f.cepOrigem('');
-            }, /Invalid string value/)
-
-            f.options.sCepOrigem = '';
+            f.cepOrigem('');
 
             f.prazo('13466321', function (err) {
                 assert.equal(/Required option: sCepOrigem has invalid value/.test(err.message), true)
