@@ -4,6 +4,29 @@ const assert = require('assert');
 const frete = require('./frete');
 
 describe("Frete", function () {
+    it('Test validation errors', function (done) {
+        var f = frete()
+
+        f.preco(function (err) {
+            let msg = err.message;
+
+            msg.should.match(/Validation error:/);
+
+            msg.should.match(/Required option: nVlPeso has invalid value: undefined/)
+            msg.should.match(/Required option: nCdFormato has invalid value: undefined/)
+            msg.should.match(/Required option: nVlComprimento has invalid value: undefined/)
+            msg.should.match(/Required option: nVlAltura has invalid value: undefined/)
+            msg.should.match(/Required option: nVlLargura has invalid value: undefined/)
+            msg.should.match(/Required option: nVlDiametro has invalid value: undefined/)
+            msg.should.match(/Required option: nVlValorDeclarado has invalid value: undefined/)
+            msg.should.match(/Required option: nCdServico has invalid value:/)
+            msg.should.match(/Required option: sCepOrigem has invalid value:/)
+            msg.should.match(/Required option: sCepDestino has invalid value: undefined/)
+
+            done();
+        })
+    });
+
     it('Set default options', function () {
         let defaultOptions = frete.defaultOptions;
         let expected = {

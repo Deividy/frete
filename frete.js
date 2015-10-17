@@ -243,7 +243,9 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
 
         V.function(callback, 'callback');
 
-        opts.sCepDestino = cep;
+        if (V.isString(cep)) {
+            opts.sCepDestino = cep;
+        }
 
         // special case, can be an array
         if (V.isArray(opts.nCdServico)) {
