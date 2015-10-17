@@ -86,7 +86,7 @@ frete()
 ```javascript
 
 var frete = require('frete');
-frete.cepOrigem('13467460').servico(frete.codigos.sedex);
+frete.cepOrigem('13467460').servico([ frete.codigos.sedex, frete.codigos.pac ]);
 
 frete().prazo('13466321', function (err, results) {
     console.log(err);
