@@ -23,10 +23,55 @@ function extend (target /*, objs... */) {
     return target;
 };
 
+function frete (opts) {
+    opts = opts || {};
+    V.objectOrEmpty(opts, 'options');
+
+    return new Frete(extend({}, defaultOptions, opts));
+};
+
+frete.formatos = {
+    caixaPacote: 1,
+    roloPrisma: 2,
+    envelope: 3
+};
+
+frete.servicos = {
+    sedex: '04014',
+    sedexCobrar: '04065',
+    pac: '04510',
+    pacCobrar: '04707',
+    sedex10: '40215',
+    sedex12: '40169',
+    sedexHoje: '40290',
+};
+
+frete.codigos = frete.servicos;
+
+frete.servicos.names = {
+    '04014': 'SEDEX à vista',
+    '04065': 'SEDEX à vista pagamento na entrega',
+    '04510': 'PAC à vista',
+    '04707': 'PAC à vista pagamento na entrega',
+    '40215': 'SEDEX 10 (à vista e a faturar)*',
+    '40169': 'SEDEX 12 (à vista e a faturar)*',
+    '40290': 'SEDEX Hoje Varejo*'
+};
+
+frete.maoPropria = {
+    sim: 'S',
+    nao: 'N'
+};
+
+frete.avisoRecebimento = {
+    sim: 'S',
+    nao: 'N'
+};
+
 const defaultOptions = {
     sCepOrigem: '',
-    sCdMaoPropria: 'N',
-    sCdAvisoRecebimento: 'N',
+    sCdMaoPropria: frete.maoPropria.nao,
+    sCdAvisoRecebimento: frete.avisoRecebimento.nao,
 
     sDsSenha: '',
     nCdEmpresa: '',
@@ -53,29 +98,6 @@ const allOptions = [
     'sDtCalculo',
     'strDataCalculo'
 ];
-
-function frete (opts) {
-    opts = opts || {};
-    V.objectOrEmpty(opts, 'options');
-
-    return new Frete(extend({}, defaultOptions, opts));
-};
-
-frete.codigos = {
-    sedex: 40010,
-    sedexCobrar: 40045,
-    sedex10: 40215,
-    sedexHoje: 40290,
-    pac: 41106
-};
-
-frete.codigos.names = {
-    40010: 'Sedex',
-    40045: 'Sedex a cobrar',
-    40215: 'Sedex 10',
-    40290: 'Sedex hoje',
-    41106: 'PAC'
-};
 
 allOptions.forEach(function (propertyName) {
     let setterName = getSetterName(propertyName);
@@ -284,7 +306,7 @@ function decorateServices (services) {
             let keyCamelCase = key[0].toLowerCase() + '' + key.substring(1);
             service[keyCamelCase] = value;
         }
-        service.name = frete.codigos.names[service.codigo];
+        service.name = frete.servicos.names[String(service.codigo).padStart(5, '0')];
     });
 
     return services;

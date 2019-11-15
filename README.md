@@ -26,11 +26,11 @@ Todas as opcoes do `wsdl` estao disponíveis via os mesmos comandos, e os metodo
 ### Calculo simples de prazo:
 
 ```javascript
-var frete = require('frete');
+const frete = require('frete');
 
 frete()
     .cepOrigem('13467460')
-    .servico(frete.codigos.sedex)
+    .servico(frete.servicos.sedex)
     .prazo('13466321', function (err, results) {
         console.log(err);
         console.log(results);
@@ -40,20 +40,20 @@ frete()
 
 ### Calculo simples de preco:
 ```javascript
-var frete = require('frete');
+const frete = require('frete');
 
 frete()
     .cepOrigem('13467460')
     .peso(1)
-    .formato(1)
+    .formato(frete.formatos.caixaPacote)
     .comprimento(16)
     .altura(2)
     .largura(11)
     .diametro(1)
-    .maoPropria('N')
+    .maoPropria(frete.maoPropria.nao)
     .valorDeclarado(50)
-    .avisoRecebimento('S')
-    .servico(frete.codigos.sedex)
+    .avisoRecebimento(frete.avisoRecebimento.sim)
+    .servico(frete.servicos.sedex)
     .preco('13466321', function (err, results) {
         console.log(err);
         console.log(results);
@@ -62,20 +62,20 @@ frete()
 
 ### Calculo simples de preco e prazo:
 ```javascript
-var frete = require('frete');
+const frete = require('frete');
 
 frete()
     .cepOrigem('13467460')
     .peso(1)
-    .formato(1)
+    .formato(frete.formatos.caixaPacote)
     .comprimento(16)
     .altura(2)
     .largura(11)
     .diametro(1)
-    .maoPropria('N')
+    .maoPropria(frete.maoPropria.nao)
     .valorDeclarado(50)
-    .avisoRecebimento('S')
-    .servico(frete.codigos.sedex)
+    .avisoRecebimento(frete.avisoRecebimento.sim)
+    .servico(frete.servicos.sedex)
     .precoPrazo('13466321', function (err, results) {
         console.log(err);
         console.log(results);
@@ -85,8 +85,8 @@ frete()
 ### Default options:
 ```javascript
 
-var frete = require('frete');
-frete.cepOrigem('13467460').servico([ frete.codigos.sedex, frete.codigos.pac ]);
+const frete = require('frete');
+frete.cepOrigem('13467460').servico([ frete.servicos.sedex, frete.servicos.pac ]);
 
 frete().prazo('13466321', function (err, results) {
     console.log(err);
@@ -103,21 +103,21 @@ frete().prazo('13466321', function (err, results) {
 ### Objeto as config / More usages
 
 ```javascript
-var frete = require('frete');
-frete.cepOrigem('13467460').servico([ frete.codigos.sedex, frete.codigos.pac ]);
+const frete = require('frete');
+frete.cepOrigem('13467460').servico([ frete.servicos.sedex, frete.servicos.pac ]);
 
 frete({
     cepDestino: '13466321',
     peso: 1,
-    formato: 1,
+    formato: frete.formatos.caixaPacote,
     comprimento: 16,
     altura: 2,
     largura: 11,
     diametro: 1,
-    maoPropria: 'N',
+    maoPropria: frete.maoPropria.nao,
     valorDeclarado: 50,
-    avisoRecebimento: 'S'
-}).preco(function(err, result) {
+    avisoRecebimento: frete.avisoRecebimento.sim
+}).prazo(function(err, result) {
     console.log(err);
     console.log(result);
 });
