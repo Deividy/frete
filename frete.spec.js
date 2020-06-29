@@ -43,15 +43,15 @@ describe("Frete", function () {
         assert.deepEqual(defaultOptions, expected);
 
         frete.cepOrigem('13467460').servico([
-            frete.codigos.sedex,
-            frete.codigos.sedex10,
-            frete.codigos.pac
+            frete.servicos.sedex,
+            frete.servicos.sedex10,
+            frete.servicos.pac
         ]);
 
         assert.notDeepEqual(defaultOptions, expected);
 
         expected.sCepOrigem = '13467460';
-        expected.nCdServico = [ 40010, 40215, 41106 ];
+        expected.nCdServico = [ '04014', '40215', '04510' ];
 
         assert.deepEqual(defaultOptions, expected);
     });
