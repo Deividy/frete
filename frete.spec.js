@@ -10,18 +10,18 @@ describe("Frete", function () {
         f.preco(function (err) {
             let msg = err.message;
 
-            msg.should.match(/Validation error:/);
+            assert(/Validation error:/.test(msg));
 
-            msg.should.match(/Required option: nVlPeso has invalid value: undefined/)
-            msg.should.match(/Required option: nCdFormato has invalid value: undefined/)
-            msg.should.match(/Required option: nVlComprimento has invalid value: undefined/)
-            msg.should.match(/Required option: nVlAltura has invalid value: undefined/)
-            msg.should.match(/Required option: nVlLargura has invalid value: undefined/)
-            msg.should.match(/Required option: nVlDiametro has invalid value: undefined/)
-            msg.should.match(/Required option: nVlValorDeclarado has invalid value: undefined/)
-            msg.should.match(/Required option: nCdServico has invalid value:/)
-            msg.should.match(/Required option: sCepOrigem has invalid value:/)
-            msg.should.match(/Required option: sCepDestino has invalid value: undefined/)
+            assert(/Required option: nVlPeso has invalid value: undefined/.test(msg));
+            assert(/Required option: nCdFormato has invalid value: undefined/.test(msg));
+            assert(/Required option: nVlComprimento has invalid value: undefined/.test(msg));
+            assert(/Required option: nVlAltura has invalid value: undefined/.test(msg));
+            assert(/Required option: nVlLargura has invalid value: undefined/.test(msg));
+            assert(/Required option: nVlDiametro has invalid value: undefined/.test(msg));
+            assert(/Required option: nVlValorDeclarado has invalid value: undefined/.test(msg));
+            assert(/Required option: nCdServico has invalid value:/.test(msg));
+            assert(/Required option: sCepOrigem has invalid value:/.test(msg));
+            assert(/Required option: sCepDestino has invalid value: undefined/.test(msg));
 
             done();
         })
@@ -43,21 +43,19 @@ describe("Frete", function () {
         assert.deepEqual(defaultOptions, expected);
 
         frete.cepOrigem('13467460').servico([
-            frete.servicos.sedex,
-            frete.servicos.sedex10,
-            frete.servicos.pac
+            frete.servicos.sedex
         ]);
 
         assert.notDeepEqual(defaultOptions, expected);
 
         expected.sCepOrigem = '13467460';
-        expected.nCdServico = [ '04014', '40215', '04510' ];
+        expected.nCdServico = [ '04014' ];
 
         assert.deepEqual(defaultOptions, expected);
     });
 
     it('Request .prazo() ok', function (done) {
-        let f = frete();
+        let f = frete().servico([ frete.servicos.sedex ]).cepOrigem('13467460');
 
         f.prazo('13466321', function (err, results) {
             if (err) return done(err);
@@ -103,17 +101,16 @@ describe("Frete", function () {
     });
 
     it('Requests .prazo() correios error', function (done) {
-        let f = frete();
+        let f = frete().servico([ frete.servicos.sedex ]).cepOrigem('13467460');
 
         f.prazo('555555', function (err) {
-            assert(/CEP de destino inexistente, consulte o Busca CEP./.test(err.message), true);
-            assert(/Serviço indisponível para o trecho informado/.test(err.message), true);
+            assert(/CEP de destino inexistente, consulte o Busca CEP./.test(err.message));
             done();
         });
     });
 
     it('Request .preco()', function (done) {
-        let f = frete();
+        let f = frete().servico([ frete.servicos.sedex ]).cepOrigem('13467460');
 
         f
             .peso(1)
@@ -153,7 +150,7 @@ describe("Frete", function () {
     });
 
     it('Request .precoPrazo()', function (done) {
-        let f = frete();
+        let f = frete().servico([ frete.servicos.sedex ]).cepOrigem('13467460');
 
         f
             .peso(1)
@@ -193,7 +190,7 @@ describe("Frete", function () {
     });
 
     it('Request .preco() config object', function (done) {
-        frete.cepOrigem('13467460').servico([ frete.codigos.sedex, frete.codigos.pac ]);
+        frete.cepOrigem('13467460').servico([ frete.codigos.pac ]);
 
         var f = frete({
             cepDestino: '13466321',
@@ -207,8 +204,10 @@ describe("Frete", function () {
             valorDeclarado: 50,
             avisoRecebimento: 'S'
         });
-        
-        f.preco(function(err, results) {  
+
+        f.preco(function(err, results) {
+            if (err) { return done(err); }
+
             let services = f.options.nCdServico;
             let hasAllServices = true;
 

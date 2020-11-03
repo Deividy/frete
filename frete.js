@@ -266,7 +266,6 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
             opts.sCepDestino = cep;
         }
 
-        // special case, can be an array
         if (V.isArray(opts.nCdServico)) {
             opts.nCdServico = opts.nCdServico.join(',');
         }
@@ -378,6 +377,10 @@ function getValidationErrors (methodName, options) {
             errors.push(msg);
         }
     });
+
+    if (V.isArray(options.nCdServico) && options.nCdServico.length > 1) {
+        errors.push('Máximo de 1 código de serviço por consulta.');
+    }
 
     return errors;
 }
