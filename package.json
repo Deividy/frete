@@ -1,28 +1,34 @@
 {
-  "name": "frete",
-  "version": "0.3.0",
-  "description": "Modulo para consumo da API de frete dos correios brasileiros, com apenas node-soap como dependencia e consultando *apenas* a api dos correios, promises support.",
-  "main": "frete.js",
-  "dependencies": {
-    "argument-validator": "",
-    "soap": ""
-  },
-  "devDependencies": {
-    "mocha": "",
-    "should": "",
-    "grunt": "",
-    "grunt-mocha-test": ""
-  },
-  "scripts": {
-    "test": "grunt test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Deividy/frete.git"
-  },
-  "keywords": [ "frete", "correios", "correio", "cep", "brasil" ],
-  "author": "Deividy Metheler Zachetti <deividyz@gmail.com>",
-  "license": "MIT",
-  "bugs": { "url": "https://github.com/Deividy/frete/issues" },
-  "homepage": "https://github.com/Deividy/frete"
+    "name": "frete",
+    "version": "0.3.1",
+    "description": "Modulo para consumo da API de frete dos correios brasileiros, com apenas node-soap como dependencia e consultando *apenas* a api dos correios, promises support.",
+    "main": "frete.js",
+    "dependencies": {
+        "argument-validator": "",
+        "soap": ""
+    },
+    "devDependencies": {
+        "mocha": ""
+    },
+    "scripts": {
+        "test": "./node_modules/mocha/bin/mocha *.spec* --no-timeout"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Deividy/frete.git"
+    },
+    "keywords": [
+        "frete",
+        "correios",
+        "correio",
+        "cep",
+        "brasil",
+        "prazo de entrega"
+    ],
+    "author": "Deividy Metheler Zachetti <deividyz@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Deividy/frete/issues"
+    },
+    "homepage": "https://github.com/Deividy/frete"
 }
