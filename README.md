@@ -23,6 +23,23 @@ Todas as opcoes do `wsdl` estao disponíveis via os mesmos comandos, e os metodo
 
 ## Exemplos
 
+### Calculo simples de prazo usando promises:
+
+```javascript
+const frete = require('frete');
+
+(async function() {
+    const results = await frete()
+        .cepOrigem('13467460')
+        .servico(frete.servicos.sedex)
+        .prazo('13466321');
+
+        console.log(results);
+})();
+
+
+```
+
 ### Calculo simples de prazo:
 
 ```javascript

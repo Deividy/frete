@@ -4,6 +4,7 @@ const path = require('path');
 
 const soap = require('soap');
 const V = require('argument-validator');
+const util = require('util');
 
 // on file system to improve perf.
 const SOAP_WSDL = path.resolve(__dirname, 'wsdl/CalcPrecoPrazo.xml');
@@ -251,6 +252,11 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
         if (V.isFunction(optsOrCallback) && !callback) {
             callback = optsOrCallback;
             opts = {};
+        }
+
+        if (!optsOrCallback && !callback) {
+            const fn = this[methodName].bind(this, cep, optsOrCallback || {});
+            return util.promisify(fn)();
         }
 
         V.objectOrEmpty(opts, 'options');

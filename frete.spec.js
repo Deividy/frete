@@ -230,4 +230,125 @@ describe("Frete", function () {
             done();
         });
     });
+
+    it('[promises] support .preco()', async() => {
+        frete.cepOrigem('13467460').servico([ frete.codigos.pac ]);
+
+        var f = frete({
+            cepDestino: '13466321',
+            peso: 1,
+            formato: 1,
+            comprimento: 16,
+            altura: 2,
+            largura: 11,
+            diametro: 1,
+            maoPropria: 'N',
+            valorDeclarado: 50,
+            avisoRecebimento: 'S'
+        });
+
+        const results = await f.preco({});
+
+        let services = f.options.nCdServico;
+        let hasAllServices = true;
+
+        services.forEach(function (service) {
+            let hasService = false;
+            for (let i = 0; i < results.length; ++i) {
+                if (results[i].codigo == service) {
+                    hasService = true;
+                    break;
+                }
+            }
+
+            if (!hasService) {
+                hasAllServices = false;
+            }
+        });
+
+        assert.equal(hasAllServices, true);
+    });
+
+    it('[promises] Request .prazo() ok', async() => {
+        let f = frete().servico([ frete.servicos.sedex ]).cepOrigem('13467460');
+
+        const results = await f.prazo('13466321');
+
+        let services = f.options.nCdServico;
+        let hasAllServices = true;
+
+        services.forEach(function (service) {
+            let hasService = false;
+            for (let i = 0; i < results.length; ++i) {
+                if (results[i].codigo == service) {
+                    hasService = true;
+                    break;
+                }
+            }
+
+            if (!hasService) {
+                hasAllServices = false;
+            }
+        });
+
+        assert.equal(hasAllServices, true);
+    });
+
+    it('[promises] requests .prazo() validation errors', async() => {
+        let f = frete().servico('');
+
+        try {
+            const results = await f.prazo('13466321');
+            assert(!results);
+        } catch(err) {
+            assert.equal(/Validation error/.test(err.message), true)
+            assert.equal(/Required option: nCdServico has invalid value/.test(err.message), true)
+            assert.equal(/Expected a valid: string/.test(err.message), true)
+
+            f.servico(frete.codigos.sedex);
+            f.cepOrigem('');
+        }
+
+        try {
+            const results = await f.prazo('13466321');
+            assert(!results);
+        } catch (err) {
+            assert.equal(/Required option: sCepOrigem has invalid value/.test(err.message), true)
+        }
+    });
+
+    it('[promises] request .precoPrazo()', async() => {
+        let f = frete().servico([ frete.servicos.sedex ]).cepOrigem('13467460');
+
+        f
+            .peso(1)
+            .formato(1)
+            .comprimento(16)
+            .altura(2)
+            .largura(11)
+            .diametro(1)
+            .maoPropria('N')
+            .valorDeclarado(50)
+            .avisoRecebimento('S');
+
+        const results = await f.precoPrazo('13466321');
+        let services = f.options.nCdServico;
+        let hasAllServices = true;
+
+        services.forEach(function (service) {
+            let hasService = false;
+            for (let i = 0; i < results.length; ++i) {
+                if (results[i].codigo == service) {
+                    hasService = true;
+                    break;
+                }
+            }
+
+            if (!hasService) {
+                hasAllServices = false;
+            }
+        });
+
+        assert.equal(hasAllServices, true);
+    });
 });
