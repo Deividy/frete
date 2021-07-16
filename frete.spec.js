@@ -351,4 +351,42 @@ describe("Frete", function () {
 
         assert.equal(hasAllServices, true);
     });
+
+    it('[promises] request .preco() config object', async() => {
+        frete.cepOrigem('13467460').servico([ frete.codigos.pac ]);
+
+        var f = frete({
+            cepDestino: '13466321',
+            peso: 1,
+            formato: 1,
+            comprimento: 16,
+            altura: 2,
+            largura: 11,
+            diametro: 1,
+            maoPropria: 'N',
+            valorDeclarado: 50,
+            avisoRecebimento: 'S'
+        });
+
+        const results = await f.preco();
+
+        let services = f.options.nCdServico;
+        let hasAllServices = true;
+
+        services.forEach(function (service) {
+            let hasService = false;
+            for (let i = 0; i < results.length; ++i) {
+                if (results[i].codigo == service) {
+                    hasService = true;
+                    break;
+                }
+            }
+
+            if (!hasService) {
+                hasAllServices = false;
+            }
+        });
+
+        assert.equal(hasAllServices, true);
+    });
 });
