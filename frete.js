@@ -100,9 +100,9 @@ const allOptions = [
     'strDataCalculo'
 ];
 
-allOptions.forEach(function (propertyName) {
-    let setterName = getSetterName(propertyName);
-    let proto = Frete.prototype;
+for (const propertyName of allOptions) {
+    const setterName = getSetterName(propertyName);
+    const proto = Frete.prototype;
 
     frete[propertyName] = frete[setterName] = function (value) {
         defaultOptions[propertyName] = value;
@@ -113,7 +113,7 @@ allOptions.forEach(function (propertyName) {
         this.options[propertyName] = value;
         return this;
     }
-});
+}
 
 frete.defaultOptions = defaultOptions;
 
@@ -121,8 +121,8 @@ function Frete (opts) {
     V.object(opts, 'opts');
 
     this.options = opts;
-    for (let key in this.options) {
-        let value = this.options[key];
+    for (const key in this.options) {
+        const value = this.options[key];
 
         if (!V.isFunction(this[key])) {
             continue;
@@ -229,11 +229,24 @@ const apiMethods = {
             'sCdAvisoRecebimento',
             'sDtCalculo'
         ]
+    },
+
+    listaServicos: {
+        correiosMethodName: 'ListaServicos'
+    },
+
+    listaServicosStar: {
+        correiosMethodName: 'ListaServicosSTAR'
+    },
+
+    verificaModal: {
+        correiosMethodName: 'VerificaModal',
+        required: []
     }
 };
 
-for (let methodName in apiMethods) {
-    let api = apiMethods[methodName];
+for (const methodName in apiMethods) {
+    const api = apiMethods[methodName];
     defineFreteApiMethod(methodName, api.correiosMethodName);
 }
 
@@ -280,9 +293,9 @@ function defineFreteApiMethod (methodName, correiosMethodName) {
             opts.nCdServico = String(opts.nCdServico);
         }
 
-        let errors = getValidationErrors(methodName, opts);
+        const errors = getValidationErrors(methodName, opts);
         if (errors.length > 0) {
-            let err = new Error("Validation error:\n" + errors.join("\n"));
+            const err = new Error("Validation error:\n" + errors.join("\n"));
             return callback(err);
         }
 
@@ -302,39 +315,45 @@ function execute (methodName, opts, callback) {
 }
 
 function decorateServices (services) {
-    services.forEach(function(service) {
-        for (let key in service) {
-            let value = service[key];
+    for (const service of services) {
+        for (const key in service) {
+            const value = service[key];
 
             delete service[key];
 
-            let keyCamelCase = key[0].toLowerCase() + '' + key.substring(1);
+            const keyCamelCase = key[0].toLowerCase() + '' + key.substring(1);
             service[keyCamelCase] = value;
         }
         service.name = frete.servicos.names[String(service.codigo).padStart(5, '0')];
-    });
+    }
 
     return services;
 }
 
 function getErrorsFromServices (services) {
-    let errors = [];
+    const errors = [];
 
-    services.forEach(function(service) {
-        if (service.MsgErro && errors.indexOf(service.MsgErro) === -1) {
-            errors.push(service.MsgErro);
+    for (const service of services) {
+        if (service.MsgErro && !errors.includes(service.MsgErro)) {
+            errors.push(`${service.MsgErro} ${service.Erro || ''}`.trim());
         }
-    });
+    }
 
     return errors;
 }
+
+const resultParsers = {
+    ListaServicos(body) { return body.ServicosCalculo.cServicosCalculo; },
+    ListaServicosSTAR(body) { return body.ServicosCalculo.cServicosCalculo; },
+    VerificaModal(body) { return body.ServicosModal.cModal; }
+};
 
 function doRequest(methodName, opts, callback) {
     V.string(methodName, 'methodName');
     V.object(opts, 'opts');
     V.function(callback, 'callback');
 
-    let resultNode = methodName + "Result";
+    const resultNode = methodName + "Result";
     execute(methodName, opts, function (err, res, body) {
         if (err) return callback(err, res, body);
 
@@ -345,13 +364,23 @@ function doRequest(methodName, opts, callback) {
                 return callback("Unknown response. cServico not found.", res, body);
             }
 
-            let errors = getErrorsFromServices(services);
+            const errors = getErrorsFromServices(services);
             if (errors.length > 0) {
-                let err = new Error(methodName + ":\n" + errors.join("\n"));
+                const err = new Error(methodName + ":\n" + errors.join("\n"));
                 return callback(err, res, body);
             }
 
             return callback(null, decorateServices(services));
+        }
+
+        if (res[resultNode] && resultParsers[methodName]) {
+            try {
+                const parser = resultParsers[methodName];
+
+                return callback(null, parser(res[resultNode]));
+            } catch (ex) {
+                return callback("Unknown response", res, body);
+            }
         }
 
         return callback("Unknown response", res, body);
@@ -362,27 +391,29 @@ function getValidationErrors (methodName, options) {
     V.string(methodName, 'methodName');
     V.object(options, 'options');
 
-    let api = apiMethods[methodName];
+    const api = apiMethods[methodName];
     if (!api) {
         throw new Error("Invalid method name: " + methodName);
     }
 
-    let requiredFields = api.required.concat(['nCdServico', 'sCepOrigem', 'sCepDestino']);
+    const requiredFields = api.required ?
+        api.required.concat(['nCdServico', 'sCepOrigem', 'sCepDestino']) : [];
 
-    let errors = [];
-    requiredFields.forEach(function(fieldName) {
+    const errors = [];
+    for (const fieldName of requiredFields) {
         // special case for cdServico since its a string but starts with n
         // and accepts more numbers with ,
-        let isString = fieldName == 'nCdServico' || fieldName[0] === 's';
-        let isNumber = fieldName != 'nCdServico' && fieldName[0] === 'n';
+        const isString = fieldName == 'nCdServico' || fieldName[0] === 's';
+        const isNumber = fieldName != 'nCdServico' && fieldName[0] === 'n';
 
-        let value = options[fieldName];
+        const value = options[fieldName];
         if ((isString && !V.isString(value)) || (isNumber && !V.isNumber(value))) {
-            let msg = "Required option: " + fieldName + " has invalid value: " + value;
-            msg += "\nExpected a valid: " + (isString ? 'string' : 'number');
+            let msg = `Required option: ${fieldName} has invalid value: ${value}`;
+            msg += `\nExpected a valid: ${(isString ? 'string' : 'number')}`;
+
             errors.push(msg);
         }
-    });
+    }
 
     if (V.isArray(options.nCdServico) && options.nCdServico.length > 1) {
         errors.push('Máximo de 1 código de serviço por consulta.');
@@ -407,7 +438,7 @@ function getSetterName (propertyName) {
         prettyNameMethod = prettyNameMethod.replace('Vl', '');
 
         // now we need to set the first letter to lowerCase(), just to be cool
-        let firstLetter = prettyNameMethod[0].toLowerCase();
+        const firstLetter = prettyNameMethod[0].toLowerCase();
         prettyNameMethod = firstLetter + prettyNameMethod.substring(1);
     }
 
