@@ -396,9 +396,18 @@ describe("Frete", function () {
         assert(results);
         assert(results.length > 10);
 
-        for (const service in frete.servicos) {
-            if (service === 'names') { continue; }
-            assert(results.some((r) => r.codigo == frete.servicos[service]));
+        const basicServices = [
+            '04014',
+            '04065',
+            '04510',
+            '04707',
+            '40215',
+            '40169',
+            '40290'
+        ];
+
+        for (const service of basicServices) {
+            assert(results.some((r) => r.codigo == service));
         }
     });
 
@@ -419,5 +428,35 @@ describe("Frete", function () {
         assert(results);
         assert(results.length, 1);
         assert(results[0].codigo, '04014');
+    });
+
+    it('searches a service by text', () => {
+        assert(frete.servicos.search('sedex').length > 100);
+        assert(frete.servicos.search('carta registrada').length > 10);
+
+        // accepts any case
+        assert(frete.servicos.search('CARTA registrAdA A VISTA').length === 1);
+    });
+
+    it('sanity check services', () => {
+        assert.strictEqual(frete.servicos.list.length, 352);
+
+        assert(frete.servicos.search('SEDEX a vista')[0].codigo === '04014');
+        assert(frete.servicos.search('SEDEX a vista pgto na entrega')[0].codigo === '04065');
+        assert(frete.servicos.search('PAC a vista')[0].codigo === '04510');
+        assert(frete.servicos.search('PAC a vista pagto na entrega')[0].codigo === '04707');
+        assert(frete.servicos.search('SEDEX 10 A FATURAR')[0].codigo === '40215');
+        assert(frete.servicos.search('SEDEX 12 A FATURAR')[0].codigo === '40169');
+        assert(frete.servicos.search('SEDEX HOJE A FATURAR')[0].codigo === '40290');
+    });
+
+    it('Request .prazo with a string service', async () => {
+        const f = frete().servico('82414').cepOrigem('13467460');
+        const results = await f.prazo('13466321');
+
+        assert.strictEqual(results.length, 1);
+        assert.strictEqual(results[0].codigo, 82414);
+        assert.strictEqual(results[0].name, 'FAC MONITORADO LOCAL');
+        assert.strictEqual(results[0].name, frete.servicos.byCode[82414].descricao);
     });
 });

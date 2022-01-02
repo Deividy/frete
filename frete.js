@@ -7,7 +7,8 @@ const V = require('argument-validator');
 const util = require('util');
 
 // on file system to improve perf.
-const SOAP_WSDL = path.resolve(__dirname, 'wsdl/CalcPrecoPrazo.xml');
+const SOAP_WSDL = path.resolve(__dirname, 'dumps/CalcPrecoPrazo.xml');
+const servicesArray = require('./dumps/listaServicos.json');
 
 function extend (target /*, objs... */) {
     V.objectOrEmpty(target, 'target');
@@ -37,6 +38,8 @@ frete.formatos = {
     envelope: 3
 };
 
+// just some of the most used services, if you are using a service too much
+// consider adding it here
 frete.servicos = {
     sedex: '04014',
     sedexCobrar: '04065',
@@ -49,14 +52,22 @@ frete.servicos = {
 
 frete.codigos = frete.servicos;
 
-frete.servicos.names = {
-    '04014': 'SEDEX à vista',
-    '04065': 'SEDEX à vista pagamento na entrega',
-    '04510': 'PAC à vista',
-    '04707': 'PAC à vista pagamento na entrega',
-    '40215': 'SEDEX 10 (à vista e a faturar)*',
-    '40169': 'SEDEX 12 (à vista e a faturar)*',
-    '40290': 'SEDEX Hoje Varejo*'
+frete.servicos.list = servicesArray;
+frete.servicos.byCode = servicesArray.reduce((acc, curr) => {
+    acc[curr.codigo] = curr;
+    return acc;
+}, {});
+
+frete.servicos.names = servicesArray.reduce((acc, curr) => {
+    acc[curr.codigo] = curr.descricao;
+    return acc;
+}, {});
+
+frete.servicos.search = (text) => {
+    V.string(text, 'text');
+
+    return frete.servicos.list.filter((s) =>
+        s.descricao.toLowerCase().includes(text.toLowerCase()));
 };
 
 frete.maoPropria = {
