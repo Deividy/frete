@@ -7,7 +7,6 @@ declare module 'frete' {
         '40215': 'SEDEX 10 (à vista e a faturar)*';
         '40169': 'SEDEX 12 (à vista e a faturar)*';
         '40290': 'SEDEX Hoje Varejo*';
-         [key: string]: string;
     }
 
     export type CodigosServico = keyof CodigosServicoMapName;
