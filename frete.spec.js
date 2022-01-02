@@ -392,7 +392,9 @@ describe("Frete", function () {
 
     it('listaServicos', async () => {
         const results = await frete().listaServicos();
+
         assert(results);
+        assert(results.length > 10);
 
         for (const service in frete.servicos) {
             if (service === 'names') { continue; }
@@ -402,8 +404,10 @@ describe("Frete", function () {
 
     it('listaServicosStar', async () => {
         const results = await frete().listaServicosStar();
-        assert(results);
 
+        // just some sanity check
+        assert(results);
+        assert(results.length > 10);
     });
 
     it('verificaModal', async () => {
