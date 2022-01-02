@@ -17,7 +17,8 @@ Modulo para consumo da `API` dos correios de calculo remoto de precos e prazos:
 Implementação  de todos os metodos disponiveis na API, com acessores simples e fáceis. :)
 
 Para ganharmos um pouco de performance, usamos o wsdl salvo no folder [`./correios-data/CalcPrecoPrazo.xml`](./correios-data/CalcPrecoPrazo.xml), ao invés de fazermos o request inicial para isso.
-Também mantemos uma lista de *todos* os serviços disponíveis pelo correio em [`./correios-data/listaServicos.json`](./correios-data/listaServicos.json), você pode atualizar essa lista juntamente com as definiçōes de TypeScript rodando o arquivo [`./scripts/dump-services.js`](./scripts/dump-services.js)
+
+Também mantemos uma lista de *todos* os serviços disponíveis pelos correio em [`./correios-data/listaServicos.json`](./correios-data/listaServicos.json), você pode atualizar essa lista juntamente com as definiçōes de TypeScript rodando o arquivo [`./scripts/dump-services.js`](./scripts/dump-services.js)
 
 Todas as opções do `wsdl` estao disponíveis via os mesmos comandos, e os metodos estão disponíveis nos mesmos nomes mas em `camelCase` e sem o prefixo `Calc`, (e.g. `.precoPrazo()`).
 
