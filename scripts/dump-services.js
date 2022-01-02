@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const frete = require('./frete');
+const frete = require('../frete');
 const path = require('path');
 const fs = require('fs');
 
@@ -16,21 +16,26 @@ const fs = require('fs');
 
     console.log(`Got a total of: ${services.length}`);
 
-    const filepath = path.resolve(__dirname, 'dumps', 'listaServicos.json');
+    const filepath = path.resolve(
+        __dirname, '../correios-data', 'listaServicos.json'
+    );
     await fs.promises.writeFile(filepath, JSON.stringify(services));
 
     console.log(`Services saved to: ${filepath}`);
 
     // *super-duper-hacky* {
     const freteTypeScriptDefinitionsStr = (await fs.promises.readFile(
-        path.resolve(__dirname, './frete.d.ts')
+        path.resolve(__dirname, '../frete.d.ts')
     )).toString();
 
     const tsDefinitionParts = freteTypeScriptDefinitionsStr
         .split(' CodigosServicoMapName {');
 
     const beforeDefinition = `${tsDefinitionParts[0]} CodigosServicoMapName {`;
-    const afterDefinition = tsDefinitionParts[1].split('}\n').slice(1).join('}\n');
+    const afterDefinition = tsDefinitionParts[1]
+        .split('}\n')
+        .slice(1)
+        .join('}\n');
 
     const servicesContentDef = services
         .map((s) => `       '${s.codigo}': '${s.descricao}';`)
@@ -41,7 +46,7 @@ const fs = require('fs');
         afterDefinition;
 
     await fs.promises.writeFile(
-        path.resolve(__dirname, './frete.d.ts'),
+        path.resolve(__dirname, '../frete.d.ts'),
         freteTsDefinition);
 
     console.log('Mapped services to ./frete.d.ts.');

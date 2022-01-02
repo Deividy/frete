@@ -7,8 +7,8 @@ const V = require('argument-validator');
 const util = require('util');
 
 // on file system to improve perf.
-const SOAP_WSDL = path.resolve(__dirname, 'dumps/CalcPrecoPrazo.xml');
-const servicesArray = require('./dumps/listaServicos.json');
+const SOAP_WSDL = path.resolve(__dirname, 'correios-data/CalcPrecoPrazo.xml');
+const servicesArray = require('./correios-data/listaServicos.json');
 
 function extend (target /*, objs... */) {
     V.objectOrEmpty(target, 'target');
