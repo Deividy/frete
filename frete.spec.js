@@ -431,7 +431,7 @@ describe("Frete", function () {
     });
 
     it('searches a service by text', () => {
-        assert(frete.servicos.search('sedex').length > 100);
+        assert(frete.servicos.search('sedex').length > 90);
         assert(frete.servicos.search('carta registrada').length > 10);
 
         // accepts any case
@@ -439,7 +439,7 @@ describe("Frete", function () {
     });
 
     it('sanity check services', () => {
-        assert.strictEqual(frete.servicos.list.length, 352);
+        assert.strictEqual(frete.servicos.list.length, 338);
 
         assert(frete.servicos.search('SEDEX a vista')[0].codigo === '04014');
         assert(frete.servicos.search('SEDEX a vista pgto na entrega')[0].codigo === '04065');
