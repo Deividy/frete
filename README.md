@@ -10,16 +10,18 @@ Frete
 ---
 
 Modulo para consumo da `API` dos correios de calculo remoto de precos e prazos:
-- http://www.correios.com.br/para-voce/correios-de-a-a-z/pdf/calculador-remoto-de-precos-e-prazos/manual-de-implementacao-do-calculo-remoto-de-precos-e-prazos
 - http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx
+- https://www.correios.com.br/atendimento/ferramentas/sistemas/arquivos/manual-de-implementacao-do-calculo-remoto-de-precos-e-prazos/view
 
 
 Implementação  de todos os metodos disponiveis na API, com acessores simples e fáceis. :)
 
-Para ganharmos um pouco de performance, usamos o wsdl salvo no folder `/wsdl`, ao inves de fazermos o request inicial para isso.
+Para ganharmos um pouco de performance, usamos o wsdl salvo no folder [`./correios-data/CalcPrecoPrazo.xml`](./correios-data/CalcPrecoPrazo.xml), ao invés de fazermos o request inicial para isso.
+Também mantemos uma lista de *todos* os serviços disponíveis pelo correio em [`./correios-data/listaServicos.json`](./correios-data/listaServicos.json), você pode atualizar essa lista juntamente com as definiçōes de TypeScript rodando o arquivo [`./scripts/dump-services.js`](./scripts/dump-services.js)
 
+Todas as opções do `wsdl` estao disponíveis via os mesmos comandos, e os metodos estão disponíveis nos mesmos nomes mas em `camelCase` e sem o prefixo `Calc`, (e.g. `.precoPrazo()`).
 
-Todas as opcoes do `wsdl` estao disponíveis via os mesmos comandos, e os metodos estao disponíveis nos mesmos nomes mas em `camelCase` e sem o prefixo `Calc`, (e.g. `.precoPrazo()`).
+Para maiores detalhes de usage, você pode checar os nossos tests em [`frete.spec.js`](./frete.spec.js)
 
 ## Exemplos
 
@@ -139,7 +141,15 @@ frete({
     console.log(result);
 });
 
+```
 
+### Utilities
+```
+const frete = require('frete');
+
+console.log(frete.servicos.list);
+console.log(frete.servicos.search('sedex'));
+console.log(frete.servicos.byCode[81876]);
 ```
 
 ---
