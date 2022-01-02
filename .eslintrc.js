@@ -20,10 +20,6 @@ module.exports = {
         }],
 
         'max-len': ['error', 100, 4],
-        'no-use-before-define': [
-            'error',
-            { 'functions': false, 'classes': false, 'variables': true }
-        ],
 
         'no-extra-semi': 2,
         'semi': [ 2, 'always' ],

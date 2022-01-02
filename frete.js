@@ -25,17 +25,6 @@ function extend (target /* , objs... */) {
     return target;
 }
 
-const defaultOptions = {
-    sCepOrigem: '',
-    sCdMaoPropria: frete.maoPropria.nao,
-    sCdAvisoRecebimento: frete.avisoRecebimento.nao,
-
-    sDsSenha: '',
-    nCdEmpresa: '',
-
-    nCdServico: ''
-};
-
 function frete (opts) {
     opts = opts || {};
     V.objectOrEmpty(opts, 'options');
@@ -89,6 +78,17 @@ frete.maoPropria = {
 frete.avisoRecebimento = {
     sim: 'S',
     nao: 'N'
+};
+
+const defaultOptions = {
+    sCepOrigem: '',
+    sCdMaoPropria: frete.maoPropria.nao,
+    sCdAvisoRecebimento: frete.avisoRecebimento.nao,
+
+    sDsSenha: '',
+    nCdEmpresa: '',
+
+    nCdServico: ''
 };
 
 const allOptions = [
