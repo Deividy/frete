@@ -10,7 +10,7 @@ const util = require('util');
 const SOAP_WSDL = path.resolve(__dirname, 'correios-data/CalcPrecoPrazo.xml');
 const servicesArray = require('./correios-data/listaServicos.json');
 
-function extend (target /*, objs... */) {
+function extend (target /* , objs... */) {
     V.objectOrEmpty(target, 'target');
 
     for (let i = 1; i < arguments.length; ++i) {
@@ -23,6 +23,17 @@ function extend (target /*, objs... */) {
     }
 
     return target;
+}
+
+const defaultOptions = {
+    sCepOrigem: '',
+    sCdMaoPropria: frete.maoPropria.nao,
+    sCdAvisoRecebimento: frete.avisoRecebimento.nao,
+
+    sDsSenha: '',
+    nCdEmpresa: '',
+
+    nCdServico: ''
 };
 
 function frete (opts) {
@@ -30,7 +41,7 @@ function frete (opts) {
     V.objectOrEmpty(opts, 'options');
 
     return new Frete(extend({}, defaultOptions, opts));
-};
+}
 
 frete.formatos = {
     caixaPacote: 1,
@@ -80,17 +91,6 @@ frete.avisoRecebimento = {
     nao: 'N'
 };
 
-const defaultOptions = {
-    sCepOrigem: '',
-    sCdMaoPropria: frete.maoPropria.nao,
-    sCdAvisoRecebimento: frete.avisoRecebimento.nao,
-
-    sDsSenha: '',
-    nCdEmpresa: '',
-
-    nCdServico: ''
-};
-
 const allOptions = [
     'sCepOrigem',
     'sCepDestino',
@@ -123,7 +123,7 @@ for (const propertyName of allOptions) {
     proto[propertyName] = proto[setterName] = function (value) {
         this.options[propertyName] = value;
         return this;
-    }
+    };
 }
 
 frete.defaultOptions = defaultOptions;

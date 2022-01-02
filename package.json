@@ -8,10 +8,12 @@
         "soap": ""
     },
     "devDependencies": {
+        "eslint": "",
         "mocha": ""
     },
     "scripts": {
-        "test": "./node_modules/mocha/bin/mocha *.spec* --no-timeout"
+        "test": "./node_modules/mocha/bin/mocha *.spec* --no-timeout",
+        "lint": "./node_modules/eslint/bin/eslint.js ."
     },
     "repository": {
         "type": "git",

@@ -1,0 +1,26 @@
+name: frete-sheriff
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  the-sheriff:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: install deps
+        run: npm install
+
+      - name: runs lint
+        run: npm run-script lint
+
+      - name: runs tests
+        run: npm test

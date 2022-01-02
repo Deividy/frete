@@ -5,26 +5,26 @@ const frete = require('./frete');
 
 describe("Frete", function () {
     it('Test validation errors', function (done) {
-        const f = frete()
+        const f = frete();
 
         f.preco(function (err) {
             const msg = err.message;
 
-            assert(/Validation error:/.test(msg));
+            assert((/Validation error:/).test(msg));
 
-            assert(/Required option: nVlPeso has invalid value: undefined/.test(msg));
-            assert(/Required option: nCdFormato has invalid value: undefined/.test(msg));
-            assert(/Required option: nVlComprimento has invalid value: undefined/.test(msg));
-            assert(/Required option: nVlAltura has invalid value: undefined/.test(msg));
-            assert(/Required option: nVlLargura has invalid value: undefined/.test(msg));
-            assert(/Required option: nVlDiametro has invalid value: undefined/.test(msg));
-            assert(/Required option: nVlValorDeclarado has invalid value: undefined/.test(msg));
-            assert(/Required option: nCdServico has invalid value:/.test(msg));
-            assert(/Required option: sCepOrigem has invalid value:/.test(msg));
-            assert(/Required option: sCepDestino has invalid value: undefined/.test(msg));
+            assert((/Required option: nVlPeso has invalid value: undefined/).test(msg));
+            assert((/Required option: nCdFormato has invalid value: undefined/).test(msg));
+            assert((/Required option: nVlComprimento has invalid value: undefined/).test(msg));
+            assert((/Required option: nVlAltura has invalid value: undefined/).test(msg));
+            assert((/Required option: nVlLargura has invalid value: undefined/).test(msg));
+            assert((/Required option: nVlDiametro has invalid value: undefined/).test(msg));
+            assert((/Required option: nVlValorDeclarado has invalid value: undefined/).test(msg));
+            assert((/Required option: nCdServico has invalid value:/).test(msg));
+            assert((/Required option: sCepOrigem has invalid value:/).test(msg));
+            assert((/Required option: sCepDestino has invalid value: undefined/).test(msg));
 
             done();
-        })
+        });
     });
 
     it('Set default options', function () {
@@ -61,7 +61,7 @@ describe("Frete", function () {
             if (err) return done(err);
 
             const services = f.options.nCdServico;
-            const hasAllServices = true;
+            let hasAllServices = true;
 
             services.forEach(function (service) {
                 let hasService = false;
@@ -78,7 +78,7 @@ describe("Frete", function () {
             });
 
             assert.equal(hasAllServices, true);
-            done()
+            done();
         });
     });
 
@@ -86,16 +86,19 @@ describe("Frete", function () {
         const f = frete().servico('');
 
         f.prazo('13466321', function (err) {
-            assert.equal(/Validation error/.test(err.message), true)
-            assert.equal(/Required option: nCdServico has invalid value/.test(err.message), true)
-            assert.equal(/Expected a valid: string/.test(err.message), true)
+            assert.equal((/Validation error/).test(err.message), true);
+            assert.equal((/Required option: nCdServico has invalid value/).test(err.message), true);
+            assert.equal((/Expected a valid: string/).test(err.message), true);
 
             f.servico(frete.codigos.sedex);
             f.cepOrigem('');
 
             f.prazo('13466321', function (err) {
-                assert.equal(/Required option: sCepOrigem has invalid value/.test(err.message), true)
-                done()
+                assert.equal(
+                    (/Required option: sCepOrigem has invalid value/).test(err.message),
+                    true);
+
+                done();
             });
         });
     });
@@ -104,7 +107,7 @@ describe("Frete", function () {
         const f = frete().servico([ frete.servicos.sedex ]).cepOrigem('13467460');
 
         f.prazo('555555', function (err) {
-            assert(/CEP de destino inexistente, consulte o Busca CEP./.test(err.message));
+            assert((/CEP de destino inexistente, consulte o Busca CEP./).test(err.message));
             done();
         });
     });
@@ -301,9 +304,9 @@ describe("Frete", function () {
             const results = await f.prazo('13466321');
             assert(!results);
         } catch(err) {
-            assert.equal(/Validation error/.test(err.message), true)
-            assert.equal(/Required option: nCdServico has invalid value/.test(err.message), true)
-            assert.equal(/Expected a valid: string/.test(err.message), true)
+            assert.equal((/Validation error/).test(err.message), true);
+            assert.equal((/Required option: nCdServico has invalid value/).test(err.message), true);
+            assert.equal((/Expected a valid: string/).test(err.message), true);
 
             f.servico(frete.codigos.sedex);
             f.cepOrigem('');
@@ -313,7 +316,7 @@ describe("Frete", function () {
             const results = await f.prazo('13466321');
             assert(!results);
         } catch (err) {
-            assert.equal(/Required option: sCepOrigem has invalid value/.test(err.message), true)
+            assert.equal((/Required option: sCepOrigem has invalid value/).test(err.message), true);
         }
     });
 
