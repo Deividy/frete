@@ -7,10 +7,10 @@ const V = require('argument-validator');
 const util = require('util');
 
 // on file system to improve perf.
-const SOAP_WSDL = path.resolve(__dirname, 'dumps/CalcPrecoPrazo.xml');
-const servicesArray = require('./dumps/listaServicos.json');
+const SOAP_WSDL = path.resolve(__dirname, 'correios-data/CalcPrecoPrazo.xml');
+const servicesArray = require('./correios-data/listaServicos.json');
 
-function extend (target /*, objs... */) {
+function extend (target /* , objs... */) {
     V.objectOrEmpty(target, 'target');
 
     for (let i = 1; i < arguments.length; ++i) {
@@ -23,14 +23,14 @@ function extend (target /*, objs... */) {
     }
 
     return target;
-};
+}
 
 function frete (opts) {
     opts = opts || {};
     V.objectOrEmpty(opts, 'options');
 
     return new Frete(extend({}, defaultOptions, opts));
-};
+}
 
 frete.formatos = {
     caixaPacote: 1,
@@ -123,7 +123,7 @@ for (const propertyName of allOptions) {
     proto[propertyName] = proto[setterName] = function (value) {
         this.options[propertyName] = value;
         return this;
-    }
+    };
 }
 
 frete.defaultOptions = defaultOptions;

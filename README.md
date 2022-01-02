@@ -1,7 +1,7 @@
 Frete
 ===============
 
-[![Build Status](https://travis-ci.org/Deividy/frete.png?branch=master)](https://travis-ci.org/Deividy/frete)
+[![frete-sheriff](https://github.com/Deividy/frete/actions/workflows/frete-sheriff.yml/badge.svg)](https://github.com/Deividy/frete/actions/workflows/frete-sheriff.yml)
 [![npm](https://img.shields.io/npm/v/npm.svg)](https://github.com/Deividy/frete)
 [![npm](https://img.shields.io/npm/l/express.svg)](https://github.com/Deividy/frete)
 
