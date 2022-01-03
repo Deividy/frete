@@ -145,7 +145,7 @@ frete({
 ```
 
 ### Utilities
-```
+```javascript
 const frete = require('frete');
 
 console.log(frete.servicos.list);
