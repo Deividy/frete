@@ -1,6 +1,6 @@
 {
     "name": "frete",
-    "version": "0.4.4",
+    "version": "0.4.5",
     "description": "Modulo para consumo da API de frete dos correios brasileiros, com apenas node-soap como dependencia e consultando *apenas* a api dos correios, promises support.",
     "main": "frete.js",
     "dependencies": {
