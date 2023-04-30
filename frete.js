@@ -376,12 +376,13 @@ function doRequest(methodName, opts, callback) {
             }
 
             const errors = getErrorsFromServices(services);
-            if (errors.length > 0) {
+            const decorated = decorateServices(services);
+            if (errors.length > 0 && !decorated.some((d) => d.valor)) {
                 const err = new Error(methodName + ":\n" + errors.join("\n"));
                 return callback(err, res, body);
             }
 
-            return callback(null, decorateServices(services));
+            return callback(null, decorated);
         }
 
         if (res[resultNode] && resultParsers[methodName]) {
