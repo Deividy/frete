@@ -176,10 +176,6 @@ const apiMethods = {
         required: [
             'nVlPeso',
             'nCdFormato',
-            'nVlComprimento',
-            'nVlAltura',
-            'nVlLargura',
-            'nVlDiametro',
             'sCdMaoPropria',
             'nVlValorDeclarado',
             'sCdAvisoRecebimento',
@@ -200,10 +196,6 @@ const apiMethods = {
         required: [
             'nVlPeso',
             'nCdFormato',
-            'nVlComprimento',
-            'nVlAltura',
-            'nVlLargura',
-            'nVlDiametro',
             'sCdMaoPropria',
             'nVlValorDeclarado',
             'sCdAvisoRecebimento'
@@ -216,9 +208,6 @@ const apiMethods = {
             'nVlPeso',
             'nCdFormato',
             'nVlComprimento',
-            'nVlAltura',
-            'nVlLargura',
-            'nVlDiametro',
             'sCdMaoPropria',
             'nVlValorDeclarado',
             'sCdAvisoRecebimento',
@@ -231,10 +220,6 @@ const apiMethods = {
         required: [
             'nVlPeso',
             'nCdFormato',
-            'nVlComprimento',
-            'nVlAltura',
-            'nVlLargura',
-            'nVlDiametro',
             'sCdMaoPropria',
             'nVlValorDeclarado',
             'sCdAvisoRecebimento',
